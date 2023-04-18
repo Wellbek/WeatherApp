@@ -8,7 +8,7 @@ class WeatherGraph extends StatefulWidget {
 
 class _WeatherGraphState extends State<WeatherGraph> {
   LineTouchData get myLineTouchData => LineTouchData(
-    handleBuiltInTouches: true,
+    handleBuiltInTouches: false,
     touchTooltipData: LineTouchTooltipData(
       tooltipBgColor: Colors.white,
     ),
@@ -52,7 +52,7 @@ class _WeatherGraphState extends State<WeatherGraph> {
     Widget text;
 
     if (value.toInt() % 2 == 0){
-      text = Text((value.toInt().toString()), style: style);
+      text = Text("${value.toInt().toString()}:00", style: style);
     } else { 
       text = const Text('');
     }
@@ -87,7 +87,7 @@ class _WeatherGraphState extends State<WeatherGraph> {
     Widget text;
     
     if (value.toInt() % 10 == 0){
-      text = Text((value.toInt().toString()), style: style);
+      text = Text("${value.toInt().toString()}°", style: style);
     } else { 
       text = const Text('');
     }
@@ -124,12 +124,12 @@ class _WeatherGraphState extends State<WeatherGraph> {
       const FlSpot(24, 6) ,
     ],
     isCurved: true,
-    color: Color.fromARGB(255, 47, 196, 52),
+    color: const Color.fromARGB(255, 47, 196, 52),
     barWidth: 4,
     dotData: FlDotData(show: false),
     belowBarData: BarAreaData(
       show: true,
-      color: Color.fromARGB(29, 73, 255, 109),
+      color: const Color.fromARGB(29, 73, 255, 109),
     )
   );
  
@@ -141,8 +141,16 @@ class _WeatherGraphState extends State<WeatherGraph> {
         borderRadius: BorderRadius.all(Radius.circular(20)),
         color: Color.fromARGB(36, 61, 61, 61),
       ),
-      child: LineChart(
-        chartData,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.all(5),
+        child: SizedBox(
+          width: 800,
+          height: 500,
+          child: LineChart(
+            chartData,
+          ),
+        ),
       )
     );
   }
@@ -153,8 +161,8 @@ class _WeatherGraphState extends State<WeatherGraph> {
     titlesData: titlesData,
     borderData: FlBorderData(show: false),
     lineBarsData: [myLineChartBarData], 
-    minX: 0, 
-    maxX: 24,
+    minX: -1, 
+    maxX: 25,
     minY: -10,
     maxY: 45, 
   );

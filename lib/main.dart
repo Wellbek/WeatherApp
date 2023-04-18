@@ -122,7 +122,7 @@ class WeatherApp extends StatelessWidget {
             ),
             Container(
               alignment: Alignment.bottomCenter,
-              margin: const EdgeInsets.fromLTRB(30, 470, 30, 0),
+              margin: const EdgeInsets.fromLTRB(15, 470, 15, 0),
               height: 200,
               child: 
                 WeatherGraph()
