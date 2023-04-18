@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weatherapp/widgets/weathergraph.dart';
 import '../widgets/searchbar.dart';
 import '../materials/gradientmaterial.dart';
 
@@ -18,7 +19,7 @@ class WeatherApp extends StatelessWidget {
             const GradientMaterial(),
             SearchBar(),
             Container(
-              margin: const EdgeInsets.symmetric( vertical: 140,),
+              margin: const EdgeInsets.symmetric( vertical: 130,),
               child: Column(     
                 children: [
                   Row(
@@ -47,11 +48,11 @@ class WeatherApp extends StatelessWidget {
               ),
             ),
             Container(
-              margin: const EdgeInsets.symmetric( vertical: 230,),
+              margin: const EdgeInsets.symmetric( vertical: 200,),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
-                  Text('22°', 
+                  Text('22°C', 
                     style: TextStyle(
                       fontWeight: FontWeight.w500,
                       fontSize: 128,
@@ -61,7 +62,14 @@ class WeatherApp extends StatelessWidget {
                   )
                 ],
               ),
-            )
+            ),
+            Container(
+              alignment: Alignment.bottomCenter,
+              margin: const EdgeInsets.fromLTRB(20, 450, 20, 0),
+              height: 200,
+              child: 
+                WeatherGraph()
+            ),
           ],
         )
       )
