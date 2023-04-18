@@ -19,7 +19,7 @@ class WeatherApp extends StatelessWidget {
             const GradientMaterial(),
             SearchBar(),
             Container(
-              margin: const EdgeInsets.symmetric( vertical: 130,),
+              margin: const EdgeInsets.symmetric( vertical: 150,),
               child: Column(     
                 children: [
                   Row(
@@ -29,8 +29,15 @@ class WeatherApp extends StatelessWidget {
                       Text('Aachen', 
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 30,
+                          fontSize: 24,
                           color: Colors.white,
+                          shadows: [
+                            Shadow(
+                                  blurRadius:10.0,  // shadow blur
+                                  color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                  offset: Offset(2.0,2.0), // how much shadow will be shown
+                            ),
+                          ],
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -39,8 +46,15 @@ class WeatherApp extends StatelessWidget {
                   const Text('Germany', 
                     style: TextStyle(
                       fontWeight: FontWeight.w300,
-                      fontSize: 16,
+                      fontSize: 12,
                       color: Colors.white,
+                      shadows: [
+                        Shadow(
+                              blurRadius:10.0,  // shadow blur
+                              color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                              offset: Offset(2.0,2.0), // how much shadow will be shown
+                        ),
+                      ],
                     ),
                     textAlign: TextAlign.center,
                   )
@@ -48,15 +62,22 @@ class WeatherApp extends StatelessWidget {
               ),
             ),
             Container(
-              margin: const EdgeInsets.symmetric( vertical: 200,),
+              margin: const EdgeInsets.symmetric( vertical: 230,),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
                   Text('22°C', 
                     style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 128,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 100,
                       color: Colors.white,
+                      shadows: [
+                          Shadow(
+                                blurRadius:10.0,  // shadow blur
+                                color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                offset: Offset(2.0,2.0), // how much shadow will be shown
+                          ),
+                      ],
                     ),
                     textAlign: TextAlign.center,
                   )
@@ -65,7 +86,7 @@ class WeatherApp extends StatelessWidget {
             ),
             Container(
               alignment: Alignment.bottomCenter,
-              margin: const EdgeInsets.fromLTRB(20, 450, 20, 0),
+              margin: const EdgeInsets.fromLTRB(30, 470, 30, 0),
               height: 200,
               child: 
                 WeatherGraph()

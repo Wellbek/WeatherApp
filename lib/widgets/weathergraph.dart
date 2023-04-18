@@ -10,7 +10,7 @@ class _WeatherGraphState extends State<WeatherGraph> {
   LineTouchData get myLineTouchData => LineTouchData(
     handleBuiltInTouches: true,
     touchTooltipData: LineTouchTooltipData(
-      tooltipBgColor: const Color.fromARGB(103, 88, 122, 216),
+      tooltipBgColor: Colors.white,
     ),
   );
 
@@ -40,7 +40,14 @@ class _WeatherGraphState extends State<WeatherGraph> {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 16,
-      color: Color(0xff587ad8),
+      color: Colors.white,
+      shadows: [
+        Shadow(
+              blurRadius:10.0,  // shadow blur
+              color: Color.fromARGB(60, 0, 0, 0), // shadow color
+              offset: Offset(2.0,2.0), // how much shadow will be shown
+        ),
+      ],
     );
     Widget text;
 
@@ -68,7 +75,14 @@ class _WeatherGraphState extends State<WeatherGraph> {
     const style = TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 16,
-      color: Color(0xff587ad8),
+      color: Colors.white,
+      shadows: [
+        Shadow(
+              blurRadius:10.0,  // shadow blur
+              color: Color.fromARGB(60, 0, 0, 0), // shadow color
+              offset: Offset(2.0,2.0), // how much shadow will be shown
+        ),
+      ],
     );
     Widget text;
     
@@ -110,22 +124,22 @@ class _WeatherGraphState extends State<WeatherGraph> {
       const FlSpot(24, 6) ,
     ],
     isCurved: true,
-    color: const Color(0xff587ad8),
-    barWidth: 6,
+    color: Color.fromARGB(255, 47, 196, 52),
+    barWidth: 4,
     dotData: FlDotData(show: false),
     belowBarData: BarAreaData(
       show: true,
-      color: const Color.fromARGB(103, 88, 122, 216),
+      color: Color.fromARGB(29, 73, 255, 109),
     )
   );
  
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.fromLTRB(10, 10, 16, 8),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(20)),
-        color: Color.fromARGB(212, 255, 255, 255),
+        color: Color.fromARGB(36, 61, 61, 61),
       ),
       child: LineChart(
         chartData,
