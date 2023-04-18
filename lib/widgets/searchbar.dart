@@ -17,40 +17,34 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(
-        vertical: 55,
-        horizontal: MediaQuery.of(context).size.width * .05,
-      ),
-      child: Material(
-        elevation: 5,
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.white,
-        child: TextField(
-          style: const TextStyle(color: Colors.black),
-          maxLines: 1,
-          controller: _textController,
-          decoration: InputDecoration(
-            hintStyle: const TextStyle(color: Colors.grey),
-            errorText: _validate ? null : null,
-            border: InputBorder.none,
-            focusedBorder: InputBorder.none,
-            enabledBorder: InputBorder.none,
-            icon: const Padding(
-              padding: EdgeInsets.only(left: 10),
-              child: Icon(
-                Icons.search,
-                color: Colors.blue,
-              ),
+    return Material(
+      elevation: 5,
+      borderRadius: BorderRadius.circular(15),
+      color: Colors.white,
+      child: TextField(
+        style: const TextStyle(color: Colors.black),
+        maxLines: 1,
+        controller: _textController,
+        decoration: InputDecoration(
+          hintStyle: const TextStyle(color: Colors.grey),
+          errorText: _validate ? null : null,
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          icon: const Padding(
+            padding: EdgeInsets.only(left: 10),
+            child: Icon(
+              Icons.search,
+              color: Color(0xff587ad8),
             ),
-            contentPadding: const EdgeInsets.only(
-              left: 0,
-              bottom: 11,
-              top: 11,
-              right: 15,
-            ),
-            hintText: "Search Location",
           ),
+          contentPadding: const EdgeInsets.only(
+            left: 0,
+            bottom: 11,
+            top: 11,
+            right: 15,
+          ),
+          hintText: "Search Location",
         ),
       ),
     );
