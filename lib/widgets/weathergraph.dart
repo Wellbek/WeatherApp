@@ -52,7 +52,7 @@ class _WeatherGraphState extends State<WeatherGraph> {
     Widget text;
 
     if (value.toInt() % 2 == 0){
-      text = Text("${value.toInt().toString()}:00", style: style);
+      text = Text("${(value.toInt() % 24).toString()}:00", style: style);
     } else { 
       text = const Text('');
     }
