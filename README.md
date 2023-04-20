@@ -1,16 +1,37 @@
-# weatherapp
+# WeatherApp
 
-A new Flutter project.
+A simple multiplatfrom weather application created using [Flutter](https://flutter.dev/) and [Dart](https://dart.dev/) and using API from [OpenWeatherMap](https://openweathermap.org/).
 
-## Getting Started
+## Description
 
-This project is a starting point for a Flutter application.
+### Purpose 
 
-A few resources to get you started if this is your first Flutter project:
+I've hoped to aquire knowledge in front end developement since I tended more towards back end developement unitl this day. 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+This project allowed me to aquire experience in front end client developement, introduced me to a new programming language [Dart](https://dart.dev/), and further practiced my ability to work with APIs.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Flutter
+
+[Flutter](https://flutter.dev/) is an open-source UI SDK created by Google, which allows for multiplatform developement for Android, iOS, Linux, macOS, Windows, and the web from a single codebase.
+
+[Flutter](https://flutter.dev/) was only released in 2017 and is competing with other multiplatform frameworks and SDKs like [React Native](https://reactnative.dev/). [Flutter](https://flutter.dev/) and [React Native](https://reactnative.dev/) are currently the most employed SDKs for cross-platform software developement.
+
+![image](https://user-images.githubusercontent.com/54329793/233318824-62b5f663-98a9-45ba-8e44-4640ddd4bd7d.png)
+
+## How to Run
+
+1. Create an account at [OpenWeatherMap](https://openweathermap.org/).
+2. Then get your API key from https://home.openweathermap.org/api_keys.
+3. Clone the repo
+```
+git clone https://github.com/Wellbek/WeatherApp.git
+```
+4. Install all the packages by typing
+```
+flutter pub get
+```
+5. Navigate to **lib/provider/weatherdata.dart** and paste your API key to the **apiKey** variable
+```dart
+String apiKey = 'examplekey123';
+```
+6. Run the App.
