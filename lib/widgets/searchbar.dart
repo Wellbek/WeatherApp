@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:weatherapp/provider/weatherdata.dart';
 
 class SearchBar extends StatefulWidget {
   @override
@@ -46,6 +48,14 @@ class _SearchBarState extends State<SearchBar> {
           ),
           hintText: "Search Location",
         ),
+        onSubmitted: (value) {
+          setState(() {
+            _textController.text.isEmpty
+                ? _validate = true
+                : Provider.of<WeatherData>(context, listen: false)
+                    .searchWeather(location: value);
+          });
+        },
       ),
     );
   }
