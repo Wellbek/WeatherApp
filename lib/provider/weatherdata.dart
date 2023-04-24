@@ -5,19 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
+import 'package:weatherapp/models/hourlyweather.dart';
 
-import '../models/dailyweather.dart';
+import '../models/hourlyweather.dart';
 import '../models/weather.dart';
 
 class WeatherData with ChangeNotifier {
   String apiKey = 'cd8b7b4eb73babc6e5489995ae79bebd';
   LatLng? currentLocation;
   late Weather weather;
-  DailyWeather currentWeather = DailyWeather();
-  List<DailyWeather> hourlyWeather = [];
-  List<DailyWeather> hourly24Weather = [];
-  List<DailyWeather> fiveDayWeather = [];
-  List<DailyWeather> sevenDayWeather = [];
+  HourlyWeather currentWeather = HourlyWeather();
+  List<HourlyWeather> hourlyWeather = [];
   bool isLoading = false;
   bool isRequestError = false;
   bool isLocationError = false;
@@ -33,7 +31,7 @@ class WeatherData with ChangeNotifier {
           final locData = await Location().getLocation();
           currentLocation = LatLng(locData.latitude!, locData.longitude!);
           await getCurrentWeather(currentLocation!);
-          await getDailyWeather(currentLocation!);
+          await getHourlyWeather(currentLocation!);
         } else {
           isLoading = false;
           isLocationError = true;
@@ -52,7 +50,7 @@ class WeatherData with ChangeNotifier {
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       weather = Weather.fromJson(extractedData);
     } catch (error) {
-      log(error.toString());
+      print(error.toString());
       isRequestError = true;
       rethrow;
     } finally {
@@ -61,46 +59,30 @@ class WeatherData with ChangeNotifier {
     }
   }
 
-  Future<void> getDailyWeather(LatLng location) async {
+  Future<void> getHourlyWeather(LatLng location) async {
     isLoading = true;
     notifyListeners();
 
-    Uri dailyUrl = Uri.parse(
-      'https://api.openweathermap.org/data/2.5/onecall?lat=${location.latitude}&lon=${location.longitude}&units=metric&exclude=minutely,current&appid=$apiKey',
+    Uri hourlyUrl = Uri.parse(
+      'https://api.openweathermap.org/data/2.5/forecast?lat=${location.latitude}&lon=${location.longitude}&units=metric&exclude=minutely,current&appid=$apiKey',
     );
     try {
-      final response = await http.get(dailyUrl);
+      final response = await http.get(hourlyUrl);
       inspect(response.body);
-      final dailyData = json.decode(response.body) as Map<String, dynamic>;
-      currentWeather = DailyWeather.fromJson(dailyData);
-      List<DailyWeather> tempHourly = [];
-      List<DailyWeather> temp24Hour = [];
-      List<DailyWeather> tempSevenDay = [];
-      List items = dailyData['daily'];
-      List itemsHourly = dailyData['hourly'];
+      final extractedData = json.decode(response.body) as Map<String, dynamic>;
+      currentWeather = HourlyWeather.fromJson(extractedData['list'][0]);
+      List<HourlyWeather> tempHourly = [];
+      //List items = extractedData['daily'];
+      List itemsHourly = extractedData['list'];
       tempHourly = itemsHourly
-          .map((item) => DailyWeather.fromHourlyJson(item))
+          .map((item) => HourlyWeather.fromJson(item))
           .toList()
           .skip(1)
-          .take(3)
-          .toList();
-      temp24Hour = itemsHourly
-          .map((item) => DailyWeather.fromHourlyJson(item))
-          .toList()
-          .skip(1)
-          .take(24)
-          .toList();
-      tempSevenDay = items
-          .map((item) => DailyWeather.fromDailyJson(item))
-          .toList()
-          .skip(1)
-          .take(7)
+          .take(8)
           .toList();
       hourlyWeather = tempHourly;
-      hourly24Weather = temp24Hour;
-      sevenDayWeather = tempSevenDay;
     } catch (error) {
-      log(error.toString());
+      print(error.toString());
       isRequestError = true;
       rethrow;
     } finally {
@@ -130,6 +112,6 @@ class WeatherData with ChangeNotifier {
     double latitude = weather.lat;
     double longitude = weather.long;
     await searchWeatherWithLocation(location);
-    await getDailyWeather(LatLng(latitude, longitude));
+    await getHourlyWeather(LatLng(latitude, longitude));
   }
 }

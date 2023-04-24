@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:provider/provider.dart';
 
-class WeatherGraph extends StatefulWidget {
-  @override
-  State<WeatherGraph> createState() => _WeatherGraphState();
-}
+import '../provider/weatherdata.dart';
 
-class _WeatherGraphState extends State<WeatherGraph> {
+class WeatherGraph extends StatelessWidget {
   LineTouchData get myLineTouchData => LineTouchData(
-    handleBuiltInTouches: false,
+    handleBuiltInTouches: true,
     touchTooltipData: LineTouchTooltipData(
       tooltipBgColor: Colors.white,
     ),
@@ -94,47 +92,55 @@ class _WeatherGraphState extends State<WeatherGraph> {
 
     return text;
   }
-  
-  LineChartBarData get myLineChartBarData => LineChartBarData(
-    spots: [
-      const FlSpot(0, 8),
-      const FlSpot(1, 8),
-      const FlSpot(2, 7),
-      const FlSpot(3, 7),
-      const FlSpot(4, 6),
-      const FlSpot(5, 6),
-      const FlSpot(6, 6),
-      const FlSpot(7, 6),
-      const FlSpot(8, 7),
-      const FlSpot(9, 9),
-      const FlSpot(10, 9),
-      const FlSpot(11, 10),
-      const FlSpot(12, 11),
-      const FlSpot(13, 12),
-      const FlSpot(14, 13),
-      const FlSpot(15, 13),
-      const FlSpot(16, 13),
-      const FlSpot(17, 13),
-      const FlSpot(18, 12),
-      const FlSpot(19, 12),
-      const FlSpot(20, 11),
-      const FlSpot(21, 10),
-      const FlSpot(22, 8),
-      const FlSpot(23, 7),
-      const FlSpot(24, 6) ,
-    ],
-    isCurved: true,
-    color: const Color.fromARGB(255, 47, 196, 52),
-    barWidth: 4,
-    dotData: FlDotData(show: false),
-    belowBarData: BarAreaData(
-      show: true,
-      color: const Color.fromARGB(29, 73, 255, 109),
-    )
-  );
- 
+
+  LineChartBarData getMyLineChartBarData(dynamic weather){
+    return LineChartBarData(
+      spots: [
+        FlSpot(weather.currentWeather.date.hour.toDouble(), weather.currentWeather.temp.toDouble()),
+        FlSpot(weather.hourlyWeather[0].date.hour.toDouble(), weather.hourlyWeather[0].temp.toDouble()),
+        FlSpot(weather.hourlyWeather[1].date.hour.toDouble(), weather.hourlyWeather[1].temp.toDouble()),
+        FlSpot(weather.hourlyWeather[2].date.hour.toDouble(), weather.hourlyWeather[2].temp.toDouble()),
+        FlSpot(weather.hourlyWeather[3].date.hour.toDouble(), weather.hourlyWeather[3].temp.toDouble()),
+        FlSpot(weather.hourlyWeather[4].date.hour.toDouble(), weather.hourlyWeather[3].temp.toDouble()),
+        FlSpot(weather.hourlyWeather[5].date.hour.toDouble(), weather.hourlyWeather[3].temp.toDouble()),
+        FlSpot(weather.hourlyWeather[6].date.hour.toDouble(), weather.hourlyWeather[3].temp.toDouble()), 
+        //FlSpot(2, weather.hourlyWeather[2]),
+        //FlSpot(3, weather.hourlyWeather[3]),
+        //FlSpot(4, weather.hourlyWeather[4]),
+        //FlSpot(5, weather.hourlyWeather[5]),
+        //FlSpot(6, weather.hourlyWeather[6]),
+        //FlSpot(7, weather.hourlyWeather[7]),
+        //FlSpot(8, weather.hourlyWeather[8]),
+        //FlSpot(9, weather.hourlyWeather[9]),
+        //FlSpot(10, weather.hourlyWeather[10]),
+        //FlSpot(11, weather.hourlyWeather[11]),
+        //FlSpot(12, weather.hourlyWeather[12]),
+        //FlSpot(13, weather.hourlyWeather[13]),
+        //FlSpot(14, weather.hourlyWeather[14]),
+        //FlSpot(15, weather.hourlyWeather[15]),
+        //FlSpot(16, weather.hourlyWeather[16]),
+        //FlSpot(17, weather.hourlyWeather[17]),
+        //FlSpot(18, weather.hourlyWeather[18]),
+        //FlSpot(19, weather.hourlyWeather[19]),
+        //FlSpot(20, weather.hourlyWeather[20]),
+        //FlSpot(21, weather.hourlyWeather[21]),
+        //FlSpot(22, weather.hourlyWeather[22]),
+        //FlSpot(23, weather.hourlyWeather[23]),
+      ],
+      isCurved: true,
+      color: const Color.fromARGB(255, 47, 196, 52),
+      barWidth: 4,
+      dotData: FlDotData(show: false),
+      belowBarData: BarAreaData(
+        show: true,
+        color: const Color.fromARGB(29, 73, 255, 109),
+      )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final weatherData = Provider.of<WeatherData>(context);
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 10, 16, 8),
       decoration: const BoxDecoration(
@@ -148,22 +154,24 @@ class _WeatherGraphState extends State<WeatherGraph> {
           width: 800,
           height: 500,
           child: LineChart(
-            chartData,
+            getChartData(weatherData),
           ),
         ),
       )
     );
   }
 
-  LineChartData get chartData => LineChartData(
-    lineTouchData: myLineTouchData,
-    gridData: FlGridData(show: false),
-    titlesData: titlesData,
-    borderData: FlBorderData(show: false),
-    lineBarsData: [myLineChartBarData], 
-    minX: -1, 
-    maxX: 25,
-    minY: -10,
-    maxY: 45, 
-  );
+  LineChartData getChartData(dynamic weather){
+    return LineChartData(
+      lineTouchData: myLineTouchData,
+      gridData: FlGridData(show: false),
+      titlesData: titlesData,
+      borderData: FlBorderData(show: false),
+      lineBarsData: [getMyLineChartBarData(weather)], 
+      minX: -1, 
+      maxX: 25,
+      minY: -10,
+      maxY: 45, 
+    );
+  }
 }
