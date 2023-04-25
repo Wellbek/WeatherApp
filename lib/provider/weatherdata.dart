@@ -72,7 +72,6 @@ class WeatherData with ChangeNotifier {
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       currentWeather = HourlyWeather.fromJson(extractedData['list'][0]);
       List<HourlyWeather> tempHourly = [];
-      //List items = extractedData['daily'];
       List itemsHourly = extractedData['list'];
       tempHourly = itemsHourly
           .map((item) => HourlyWeather.fromJson(item))
