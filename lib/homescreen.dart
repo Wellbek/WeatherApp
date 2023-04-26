@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     alignment: Alignment.bottomCenter,
                     margin: const EdgeInsets.fromLTRB(15, 470, 15, 0),
-                    height: 200,
+                    height: 225,
                     child: 
                       WeatherGraph()
                   ),

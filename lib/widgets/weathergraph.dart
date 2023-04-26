@@ -10,9 +10,24 @@ class WeatherGraph extends StatelessWidget {
   dynamic weatherData;
 
   LineTouchData get myLineTouchData => LineTouchData(
+    touchSpotThreshold: 40,
     handleBuiltInTouches: true,
     touchTooltipData: LineTouchTooltipData(
       tooltipBgColor: Colors.white,
+      getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
+        return lineBarsSpot.map((lineBarSpot) {
+          return LineTooltipItem(
+            "${lineBarSpot.y.toInt()}°C",
+            const TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          );
+        }).toList();
+      },
+      tooltipMargin: 50,
+      fitInsideHorizontally: true,
+      fitInsideVertically: true,
     ),
   );
 
@@ -55,7 +70,7 @@ class WeatherGraph extends StatelessWidget {
 
     if (value.toInt() % 3 == 0){
       if (value~/3 == 0){
-        text = Text("${(weatherData.currentWeather.date.hour % 24).toString()}:00", style: style);
+          text = Text("${(weatherData.currentWeather.date.hour % 24).toString()}:00", style: style);
       } else {
         text = Text("${(weatherData.hourlyWeather[(value~/3)-1].date.hour % 24).toString()}:00", style: style);
       }
@@ -116,7 +131,7 @@ class WeatherGraph extends StatelessWidget {
     isCurved: true,
     color: const Color.fromARGB(255, 47, 196, 52),
     barWidth: 4,
-    dotData: FlDotData(show: false),
+    dotData: FlDotData(show: true,),
     belowBarData: BarAreaData(
       show: true,
       color: const Color.fromARGB(29, 73, 255, 109),
@@ -132,16 +147,41 @@ class WeatherGraph extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(20)),
         color: Color.fromARGB(36, 61, 61, 61),
       ),
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.all(5),
-        child: SizedBox(
-          width: 800,
-          height: 500,
-          child: LineChart(
-            chartData,
+      child: 
+      Column(   
+        children: [
+          Row(    
+            children: const [
+              Icon(Icons.access_time, color: Colors.white,),
+              Text(' temperature next 24 hours', 
+                style: TextStyle(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16,
+                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      blurRadius:10.0,  // shadow blur
+                      color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                      offset: Offset(2.0,2.0), // how much shadow will be shown
+                    ),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              )
+            ]
           ),
-        ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.all(5),
+            child: SizedBox(
+              width: 800,
+              height: 170,
+              child: LineChart(
+                chartData,
+              ),
+            ),
+          ),
+        ],
       )
     );
   }
