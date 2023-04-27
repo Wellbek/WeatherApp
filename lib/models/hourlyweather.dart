@@ -9,6 +9,7 @@ class HourlyWeather with ChangeNotifier {
   final int? humidity;
   final double? windSpeed;
   final DateTime? date;
+  final String? currently;
 
   HourlyWeather({
     this.temp,
@@ -19,6 +20,7 @@ class HourlyWeather with ChangeNotifier {
     this.humidity,
     this.windSpeed,
     this.date,
+    this.currently,
   });
 
   factory HourlyWeather.fromJson(Map<String, dynamic> json) {
@@ -31,6 +33,7 @@ class HourlyWeather with ChangeNotifier {
       humidity: json['main']['humidity'],
       windSpeed: (json['wind']['speed']).toDouble(),
       date: DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000),
+      currently: json['weather'][0]['main'],
     );
   }
 }
