@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:weatherapp/widgets/weathergraph.dart';
+import 'package:weatherapp/widgets/threedayforecast.dart';
 import 'package:provider/provider.dart';
 import '../widgets/searchbar.dart';
 import '../materials/gradientmaterial.dart';
@@ -86,9 +87,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.white,
                               shadows: [
                                 Shadow(
-                                      blurRadius:10.0,  // shadow blur
-                                      color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                      offset: Offset(2.0,2.0), // how much shadow will be shown
+                                  blurRadius:10.0,  // shadow blur
+                                  color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                  offset: Offset(2.0,2.0), // how much shadow will be shown
                                 ),
                               ],
                             ),
@@ -160,10 +161,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Container(
                     alignment: Alignment.bottomCenter,
-                    margin: const EdgeInsets.fromLTRB(15, 470, 15, 0),
+                    margin: const EdgeInsets.fromLTRB(15, 450, 15, 0),
                     height: 225,
                     child: 
                       WeatherGraph()
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    height: 110,
+                    margin: const EdgeInsets.fromLTRB(7.5, 690, 7.5, 0),
+                    child: ThreeDayForecast(),
                   ),
                 ],
               )
