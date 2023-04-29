@@ -52,7 +52,16 @@ class _HomeScreenState extends State<HomeScreen> {
             if (weatherProv.isRequestError){
               log("Request Error");
             }
-            return Scaffold(   
+            return (_isLoading || weatherProv.isLoading)
+            ? const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Color(0xff587ad8),
+                  color: Colors.white,
+                ),
+              ),
+            ) :
+            Scaffold(   
               extendBodyBehindAppBar: true,
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
@@ -65,16 +74,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       const Icon(Icons.location_on_outlined, color: Colors.white,),
                       Column(
                         children: [
-                          Text(weatherProv.weather.cityName, 
+                          Text( 
+                            weatherProv.weather.cityName, 
                             style: const TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: 22,
                               color: Colors.white,
                               shadows: [
                                 Shadow(
-                                      blurRadius:10.0,  // shadow blur
-                                      color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                      offset: Offset(2.0,2.0), // how much shadow will be shown
+                                  blurRadius:10.0,  // shadow blur
+                                  color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                  offset: Offset(2.0,2.0), // how much shadow will be shown
                                 ),
                               ],
                             ),
