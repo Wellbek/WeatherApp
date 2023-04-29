@@ -98,7 +98,15 @@ class WeatherData with ChangeNotifier {
         DateTime itemTime = item.date ?? DateTime.now();
         var tempIndex = daysBetween(DateTime.now(), itemTime);
 
-        if (tempIndex == 0 || tempIndex > dailyWeather.length) continue;
+        if (tempIndex == 0 || tempIndex > dailyWeather.length){
+          // NOTE: TEMPORARELY TO ATLEAST APPROXIMATE MAX/MIN TEMP (the later the more inaccurate the info will be)
+          //        to accurately display max and min historical data is needed which is not free
+          if (tempIndex == 0){
+            weather.tempMax = max(item.tempMax ?? 0, weather.tempMax).ceilToDouble();
+            weather.tempMin = min(item.tempMin ?? 0, weather.tempMin).floorToDouble();
+          }
+          continue;
+        }
 
         if (index != tempIndex){ // first entry of day so set its values as default for the day
           dailyWeather[tempIndex-1].tempMax = item.tempMax;

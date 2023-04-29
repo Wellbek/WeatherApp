@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weatherapp/utils.dart';
 
 import '../provider/weatherdata.dart';
 
@@ -17,61 +18,6 @@ class ThreeDayForecast extends StatelessWidget {
       ),
     ],
   );
-
-  IconData getWeatherIcon(int index, dynamic weatherData){
-    IconData res = Icons.sunny; //set sunny as default
-
-    switch (weatherData.dailyWeather[index].currently) {
-      case "Thunderstorm":
-        res = Icons.thunderstorm;
-        break;
-      case "Drizzle":
-        res = Icons.cloudy_snowing;
-        break;
-      case "Rain":
-        res = Icons.cloudy_snowing;
-        break;
-      case "Snow":
-        res = Icons.cloudy_snowing;
-        break;
-      case "Mist":
-        res = Icons.foggy;
-        break;
-      case "Smoke":
-        res = Icons.foggy;
-        break;
-      case "Haze":
-        res = Icons.foggy;
-        break;
-      case "Dust":
-        res = Icons.foggy;
-        break;
-      case "Fog":
-        res = Icons.foggy;
-        break;
-      case "Sand":
-        res = Icons.foggy;
-        break;
-      case "Ash":
-        res = Icons.foggy;
-        break;
-      case "Squall":
-        res = Icons.air;
-        break;
-      case "Tornado":
-        res = Icons.tornado;
-        break;
-      case "Clear":
-        res = Icons.sunny;
-        break;
-      case "Clouds":
-        res = Icons.cloud;
-        break;
-    }
-
-    return res;
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -102,10 +48,10 @@ class ThreeDayForecast extends StatelessWidget {
             style: style,
           ),
           const SizedBox(height: 10),
-          Icon(getWeatherIcon(index, weatherData), color: Colors.white,),
+          Icon(Utils.getWeatherIcon(weatherData.dailyWeather[index].currently), color: Colors.white,),
           const SizedBox(height: 10),
           Text(
-            "${weatherData.dailyWeather[index].tempMax.toInt()}° / ${weatherData.dailyWeather[index].tempMin.toInt()}°",
+            "${weatherData.dailyWeather[index].tempMax.toStringAsFixed(0)}° / ${weatherData.dailyWeather[index].tempMin.toStringAsFixed(0)}°",
             style: style,
           ),
         ]

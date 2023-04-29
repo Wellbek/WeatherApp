@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:weatherapp/utils.dart';
 import 'package:weatherapp/widgets/weathergraph.dart';
 import 'package:weatherapp/widgets/threedayforecast.dart';
 import 'package:provider/provider.dart';
@@ -72,6 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.center, 
                     children: [
                       const Icon(Icons.location_on_outlined, color: Colors.white,),
+                      const SizedBox(width: 10,),
                       Column(
                         children: [
                           Text( 
@@ -90,10 +92,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const Text('Germany', 
-                            style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: 12,
+                          Text(
+                            weatherProv.weather.country,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
                               color: Colors.white,
                               shadows: [
                                 Shadow(
@@ -147,26 +150,104 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: <Widget> [
                   const GradientMaterial(),
                   Container(
-                    margin: const EdgeInsets.symmetric( vertical: 200,),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('${weatherProv.weather.temp.toString().split('.')[0]}°C', 
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 100,
+                    margin: const EdgeInsets.symmetric( vertical: 55,),
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Icon(
+                            Utils.getWeatherIcon(weatherProv.weather.currently),
                             color: Colors.white,
-                            shadows: [
+                            size: 150,
+                            shadows: const [
                                 Shadow(
-                                      blurRadius:10.0,  // shadow blur
-                                      color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                      offset: Offset(2.0,2.0), // how much shadow will be shown
+                                  blurRadius:10.0,  // shadow blur
+                                  color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                  offset: Offset(2.0,2.0), // how much shadow will be shown
                                 ),
-                            ],
+                              ],
                           ),
-                          textAlign: TextAlign.center,
-                        )
-                      ],
+                          Text(weatherProv.weather.description,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 20,
+                              color: Colors.white,
+                              shadows: [
+                                  Shadow(
+                                    blurRadius:10.0,  // shadow blur
+                                    color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                    offset: Offset(2.0,2.0), // how much shadow will be shown
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10,),
+                          Text('${weatherProv.weather.temp.toString().split('.')[0]}°C', 
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 90,
+                              color: Colors.white,
+                              shadows: [
+                                  Shadow(
+                                    blurRadius:10.0,  // shadow blur
+                                    color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                    offset: Offset(2.0,2.0), // how much shadow will be shown
+                                  ),
+                              ],
+                            ),
+                          ),
+                          Text('${weatherProv.weather.tempMax.toStringAsFixed(0)}° / ${weatherProv.weather.tempMin.toStringAsFixed(0)}°', 
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 20,
+                              color: Colors.white,
+                              shadows: [
+                                  Shadow(
+                                    blurRadius:10.0,  // shadow blur
+                                    color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                    offset: Offset(2.0,2.0), // how much shadow will be shown
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.water_drop_outlined, color: Colors.white,),
+                              Text(' ${weatherProv.weather.humidity} %', 
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  shadows: [
+                                      Shadow(
+                                        blurRadius:10.0,  // shadow blur
+                                        color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                        offset: Offset(2.0,2.0), // how much shadow will be shown
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 20,),
+                              const Icon(Icons.air_outlined, color: Colors.white,),
+                              Text(' ${weatherProv.weather.windSpeed} m/s', 
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  shadows: [
+                                      Shadow(
+                                        blurRadius:10.0,  // shadow blur
+                                        color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                        offset: Offset(2.0,2.0), // how much shadow will be shown
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                   Container(
