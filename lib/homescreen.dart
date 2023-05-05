@@ -181,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           const SizedBox(height: 10,),
-                          Text('${weatherProv.weather.temp.toString().split('.')[0]}°C', 
+                          Text('${weatherProv.weather.temp.toStringAsFixed(0)}°C', 
                             style: const TextStyle(
                               fontWeight: FontWeight.w400,
                               fontSize: 90,

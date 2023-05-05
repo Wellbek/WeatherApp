@@ -108,7 +108,7 @@ class WeatherGraph extends StatelessWidget {
     Widget text;
     
     if (value.toInt() % 10 == 0){
-      text = Text("${value.toInt().toString()}°", style: style);
+      text = Text("${value.toStringAsFixed(0)}°", style: style);
     } else { 
       text = const Text('');
     }
@@ -118,15 +118,15 @@ class WeatherGraph extends StatelessWidget {
 
   LineChartBarData get myLineChartBarData => LineChartBarData(
     spots: [
-      FlSpot(0, weatherData.currentWeather.temp.toDouble()),
-      FlSpot(3, weatherData.hourlyWeather[0].temp.toDouble()),
-      FlSpot(6, weatherData.hourlyWeather[1].temp.toDouble()),
-      FlSpot(9, weatherData.hourlyWeather[2].temp.toDouble()),
-      FlSpot(12, weatherData.hourlyWeather[3].temp.toDouble()),
-      FlSpot(15, weatherData.hourlyWeather[4].temp.toDouble()),
-      FlSpot(18, weatherData.hourlyWeather[5].temp.toDouble()),
-      FlSpot(21, weatherData.hourlyWeather[6].temp.toDouble()), 
-      FlSpot(24, weatherData.hourlyWeather[7].temp.toDouble()), 
+      FlSpot(0, weatherData.currentWeather.temp),
+      FlSpot(3, weatherData.hourlyWeather[0].temp),
+      FlSpot(6, weatherData.hourlyWeather[1].temp),
+      FlSpot(9, weatherData.hourlyWeather[2].temp),
+      FlSpot(12, weatherData.hourlyWeather[3].temp),
+      FlSpot(15, weatherData.hourlyWeather[4].temp),
+      FlSpot(18, weatherData.hourlyWeather[5].temp),
+      FlSpot(21, weatherData.hourlyWeather[6].temp), 
+      FlSpot(24, weatherData.hourlyWeather[7].temp), 
     ],
     isCurved: true,
     color: const Color.fromARGB(255, 47, 196, 52),

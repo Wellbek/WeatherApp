@@ -10,9 +10,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:weatherapp/models/hourlyweather.dart';
 import 'package:weatherapp/models/dailyweather.dart';
-
-
-import '../models/hourlyweather.dart';
 import '../models/weather.dart';
 
 class WeatherData with ChangeNotifier {
@@ -99,8 +96,8 @@ class WeatherData with ChangeNotifier {
         var tempIndex = daysBetween(DateTime.now(), itemTime);
 
         if (tempIndex == 0 || tempIndex > dailyWeather.length){
-          // NOTE: TEMPORARELY TO ATLEAST APPROXIMATE MAX/MIN TEMP (the later the more inaccurate the info will be)
-          //        to accurately display max and min historical data is needed which is not free
+          // NOTE: WE CAN ONLY CALCULATE THE MIN/MAX TEMP FOR THE REST OF THE DAY AND NOT FACTOR IN THE PAST HOURS
+          //        to factor in past hours historical data is needed which is not free
           if (tempIndex == 0){
             weather.tempMax = max(item.tempMax ?? 0, weather.tempMax).ceilToDouble();
             weather.tempMin = min(item.tempMin ?? 0, weather.tempMin).floorToDouble();
@@ -147,9 +144,9 @@ class WeatherData with ChangeNotifier {
     isLoading = true;
     isRequestError = false;
     isLocationError = false;
+    await searchWeatherWithLocation(location);
     double latitude = weather.lat;
     double longitude = weather.long;
-    await searchWeatherWithLocation(location);
     await getHourlyWeather(LatLng(latitude, longitude));
   }
 }
