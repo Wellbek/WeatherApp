@@ -17,6 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
+  List<Widget> drawerElements = [];
 
   @override
   void initState() {
@@ -40,6 +41,22 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _refreshData(BuildContext context) async {
     await Provider.of<WeatherData>(context, listen: false)
         .getWeatherData(isRefresh: true);
+  }
+
+  void addDrawerElement(String location){
+    drawerElements.add(
+      ListTile(
+        title: Text(
+          location, 
+          style: const TextStyle(
+            color: Color(0xff587ad8),
+          )
+        ),
+        onTap: () {
+          Provider.of<WeatherData>(context, listen: false).searchWeather(location: location);
+        },
+      )
+    );
   }
 
   @override
@@ -69,65 +86,62 @@ class _HomeScreenState extends State<HomeScreen> {
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 centerTitle: true,
-                title: Transform(
-                  transform: Matrix4.translationValues(-30, 0, 0),
-                  child: Row(    
-                    mainAxisAlignment: MainAxisAlignment.center, 
-                    children: [
-                      const Icon(Icons.location_on_outlined, color: Colors.white,),
-                      const SizedBox(width: 10,),
-                      Column(
-                        children: [
-                          Text( 
-                            weatherProv.weather.cityName, 
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 22,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  blurRadius:10.0,  // shadow blur
-                                  color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                  offset: Offset(2.0,2.0), // how much shadow will be shown
-                                ),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
+                title: Column(
+                  children: [
+                    Text( 
+                      weatherProv.weather.cityName, 
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 22,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            blurRadius:10.0,  // shadow blur
+                            color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                            offset: Offset(2.0,2.0), // how much shadow will be shown
                           ),
-                          Text(
-                            weatherProv.weather.country,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontSize: 14,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  blurRadius:10.0,  // shadow blur
-                                  color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                  offset: Offset(2.0,2.0), // how much shadow will be shown
-                                ),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                          )
                         ],
                       ),
-                    ],
-                  ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      weatherProv.weather.country,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 14,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            blurRadius:10.0,  // shadow blur
+                            color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                            offset: Offset(2.0,2.0), // how much shadow will be shown
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    )
+                  ],
                 ),
+                actions: [
+                  IconButton(
+                    onPressed: () {setState(() {addDrawerElement(weatherProv.weather.cityName); });}, 
+                    icon: const Icon(Icons.add_location_alt_outlined, color: Colors.white),
+                  )
+                ],
                 backgroundColor: const Color.fromARGB(0, 0, 0, 0),
                 elevation: 0,
               ),
               drawer: Drawer(
                 child: ListView(
-                  children: [
+                  children: <Widget>[
                     SizedBox(
                       height: 80,
                       child: DrawerHeader(
                         child: SearchBar(), 
                       ),
-                    ),
-                    ListTile(
+                    )
+                  ]
+                  + [ListTile(
                       title: Row(
                         children: const [
                           Icon(Icons.share_location_outlined, color: Color.fromARGB(255, 216, 99, 88),),
@@ -143,19 +157,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () {
                         Provider.of<WeatherData>(context, listen: false).getWeatherData(isRefresh: true);
                       },
-                    ),           
-                    ListTile(
-                      title: const Text(
-                        'Ibbenbüren', 
-                        style: TextStyle(
-                          color: Color(0xff587ad8),
-                        )
-                      ),
-                      onTap: () {
-                        Provider.of<WeatherData>(context, listen: false).searchWeather(location: 'Ibbenbüren');
-                      },
                     )
                   ]
+                  + drawerElements,           
                 ),
               ),
               body: Stack(
