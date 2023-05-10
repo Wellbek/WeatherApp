@@ -1,8 +1,8 @@
+import 'dart:collection';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:weatherapp/utils.dart';
-import 'package:weatherapp/widgets/blinkingwidget.dart';
 import 'package:weatherapp/widgets/weathergraph.dart';
 import 'package:weatherapp/widgets/threedayforecast.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
-  List<Widget> drawerElements = [];
+  Map<String, Widget> drawerElements = HashMap(); //hashmap -> no duplicates and easy remove
 
   @override
   void initState() {
@@ -44,19 +44,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void addDrawerElement(String location){
-    drawerElements.add(
+    drawerElements.addAll({
+      location: 
       ListTile(
-        title: Text(
-          location, 
-          style: const TextStyle(
-            color: Color(0xff587ad8),
-          )
-        ),
-        onTap: () {
-          Provider.of<WeatherData>(context, listen: false).searchWeather(location: location);
-        },
-      )
-    );
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: const TextStyle(
+                  color: Color(0xff587ad8),
+                )
+              ), 
+              onPressed: () { Provider.of<WeatherData>(context, listen: false).searchWeather(location: location); },
+              child: Text(location), 
+            ),
+            IconButton(
+              onPressed: () {setState((){drawerElements.remove(location);});}, 
+              icon: const Icon(Icons.remove, color: Colors.black),
+            ),
+          ],
+        )
+      ),
+    });
   }
 
   @override
@@ -159,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     )
                   ]
-                  + drawerElements,           
+                  + drawerElements.values.toList(),           
                 ),
               ),
               body: Stack(
