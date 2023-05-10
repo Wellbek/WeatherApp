@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:weatherapp/utils.dart';
+import 'package:weatherapp/widgets/blinkingwidget.dart';
 import 'package:weatherapp/widgets/weathergraph.dart';
 import 'package:weatherapp/widgets/threedayforecast.dart';
 import 'package:provider/provider.dart';
@@ -127,14 +128,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                     ListTile(
-                      title: const Text(
-                        'Laurensberg', 
-                        style: TextStyle(
-                          color: Color(0xff587ad8),
-                        )
+                      title: Row(
+                        children: const [
+                          Icon(Icons.share_location_outlined, color: Color.fromARGB(255, 216, 99, 88),),
+                          SizedBox(width: 10,),
+                          Text(
+                            'LIVE LOCATION', 
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 216, 99, 88),
+                            )
+                          ),
+                        ],   
                       ),
-                      onTap: () {}
-                    ),              
+                      onTap: () {
+                        Provider.of<WeatherData>(context, listen: false).getWeatherData(isRefresh: true);
+                      },
+                    ),           
                     ListTile(
                       title: const Text(
                         'Ibbenbüren', 
@@ -142,7 +151,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Color(0xff587ad8),
                         )
                       ),
-                      onTap: () {}
+                      onTap: () {
+                        Provider.of<WeatherData>(context, listen: false).searchWeather(location: 'Ibbenbüren');
+                      },
                     )
                   ]
                 ),
