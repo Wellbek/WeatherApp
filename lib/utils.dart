@@ -1,8 +1,19 @@
-import 'dart:collection';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:weatherapp/city.dart';
 
 class Utils {
+
+  static List<City> citylist = [];
+
+  static Future<void> initCitylist() async{
+    final String response = await rootBundle.loadString('lib/assets/citylist.json');
+    final extractedData = await json.decode(response) as Map<String, dynamic>;
+    List items = extractedData['list'];
+    citylist = items.map((item) => City.fromJson(item)).toList();
+  }
 
   static IconData getWeatherIcon(String currently){
     IconData res = Icons.sunny; //set sunny as default

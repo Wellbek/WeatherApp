@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _isLoading = true;
     final weatherData = Provider.of<WeatherData>(context, listen: false);
     weatherData.getWeatherData();
+    Utils.initCitylist();
     _isLoading = false;
   }
 

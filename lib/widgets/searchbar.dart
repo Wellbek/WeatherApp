@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weatherapp/provider/weatherdata.dart';
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
+
+import '../city.dart';
+import '../utils.dart';
 
 class SearchBar extends StatefulWidget {
   @override
@@ -10,6 +14,8 @@ class SearchBar extends StatefulWidget {
 class _SearchBarState extends State<SearchBar> {
   final _textController = TextEditingController();
   bool _validate = false;
+
+  GlobalKey<AutoCompleteTextFieldState<City>> key = GlobalKey();
 
   @override
   void dispose() {
@@ -23,9 +29,8 @@ class _SearchBarState extends State<SearchBar> {
       elevation: 5,
       borderRadius: BorderRadius.circular(15),
       color: Colors.white,
-      child: TextField(
+      child: AutoCompleteTextField<City>(
         style: const TextStyle(color: Colors.black),
-        maxLines: 1,
         controller: _textController,
         decoration: InputDecoration(
           hintStyle: const TextStyle(color: Colors.grey),
@@ -48,12 +53,25 @@ class _SearchBarState extends State<SearchBar> {
           ),
           hintText: "Search Location",
         ),
-        onSubmitted: (value) {
+        itemFilter: (item, query) {
+          return item.name.toLowerCase().startsWith(query.toLowerCase());
+        },
+        suggestions: Utils.citylist,
+        key: key,
+        itemBuilder: (context, suggestion) => ListTile(
+              title: Text(suggestion.name),
+              trailing: Text(suggestion.country)),
+        itemSorter: (a, b) => a.name == b.name //sort alphabetically
+          ? 0
+          : a.name.compareTo(b.name) < 0
+            ? -1
+            : 1,
+        itemSubmitted: (city) {
           setState(() {
             _textController.text.isEmpty
                 ? _validate = true
                 : Provider.of<WeatherData>(context, listen: false)
-                    .searchWeather(location: value);
+                    .searchWeather(location: city.name);
           });
         },
       ),
