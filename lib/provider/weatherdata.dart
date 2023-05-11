@@ -126,10 +126,18 @@ class WeatherData with ChangeNotifier {
     }
   }
 
-  Future<void> searchWeatherWithLocation(String location) async {
-    Uri url = Uri.parse(
-      'https://api.openweathermap.org/data/2.5/weather?q=$location&units=metric&appid=$apiKey',
-    );
+  Future<void> searchWeatherWithLocation(String location, [double? lat, double? lon]) async {
+    Uri url = (lat != null && lon != null) 
+      ? Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&units=metric&appid=$apiKey',
+      )
+      : Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?q=$location&units=metric&appid=$apiKey',
+      ); 
+
+    print(lat);
+    print(lon);
+
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
@@ -140,11 +148,11 @@ class WeatherData with ChangeNotifier {
     }
   }
 
-  Future<void> searchWeather({required String location}) async {
+  Future<void> searchWeather({required String location, double? lat, double? lon}) async {
     isLoading = true;
     isRequestError = false;
     isLocationError = false;
-    await searchWeatherWithLocation(location);
+    await searchWeatherWithLocation(location, lat, lon);
     double latitude = weather.lat;
     double longitude = weather.long;
     await getHourlyWeather(LatLng(latitude, longitude));

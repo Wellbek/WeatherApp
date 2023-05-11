@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../widgets/searchbar.dart';
 import '../materials/gradientmaterial.dart';
 import '../provider/weatherdata.dart';
+import 'city.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
-  Map<String, Widget> drawerElements = HashMap(); //hashmap -> no duplicates and easy remove
+  Map<City, Widget> drawerElements = HashMap(); //hashmap -> no duplicates and easy remove
 
   @override
   void initState() {
@@ -43,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .getWeatherData(isRefresh: true);
   }
 
-  void addDrawerElement(String location){
+  void addDrawerElement(City location){
     drawerElements.addAll({
       location: 
       ListTile(
@@ -56,8 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Color(0xff587ad8),
                 )
               ), 
-              onPressed: () { Provider.of<WeatherData>(context, listen: false).searchWeather(location: location); },
-              child: Text(location), 
+              onPressed: () { Provider.of<WeatherData>(context, listen: false).searchWeather(location: location.name, lat: location.lat, lon: location.long); },
+              child: Text("${location.name}, ${location.country}"), 
             ),
             IconButton(
               onPressed: () {setState((){drawerElements.remove(location);});}, 
@@ -134,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 actions: [
                   IconButton(
-                    onPressed: () {setState(() {addDrawerElement(weatherProv.weather.cityName); });}, 
+                    onPressed: () {setState(() {addDrawerElement(City(id: 0, name: weatherProv.weather.cityName, state: "", country: weatherProv.weather.country, long: weatherProv.weather.long, lat: weatherProv.weather.lat)); });}, 
                     icon: const Icon(Icons.add_location_alt_outlined, color: Colors.white),
                   )
                 ],

@@ -71,7 +71,7 @@ class _SearchBarState extends State<SearchBar> {
             _textController.text.isEmpty
                 ? _validate = true
                 : Provider.of<WeatherData>(context, listen: false)
-                    .searchWeather(location: city.name);
+                    .searchWeather(location: city.name, lat: city.lat, lon: city.long);
           });
         },
       ),
