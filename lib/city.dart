@@ -25,4 +25,15 @@ class City{
       lat: (json['coord']['lat']).toDouble(),
     );
   }
+
+  Map<String, dynamic> toMap() => {
+    'id': id,
+    'name': name,
+    'state': state,
+    'country': country,
+    'coord': {
+      'lon': long,
+      'lat': lat,
+    }
+  };
 }

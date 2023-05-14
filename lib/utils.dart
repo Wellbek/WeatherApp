@@ -64,6 +64,9 @@ class Utils {
       case "Clouds":
         res = Icons.cloud;
         break;
+      default:
+        res = Icons.sunny;
+        break;
     }
 
     return res;

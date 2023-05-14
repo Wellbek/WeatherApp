@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import '../widgets/searchbar.dart';
 import '../materials/gradientmaterial.dart';
 import '../provider/weatherdata.dart';
 import 'city.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -20,8 +22,10 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
   Map<City, Widget> drawerElements = HashMap(); //hashmap -> no duplicates and easy remove
 
+  late final SharedPreferences prefs;
+
   @override
-  void initState() {
+  void initState(){
     super.initState();
     _getData();
   }
@@ -36,6 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final weatherData = Provider.of<WeatherData>(context, listen: false);
     weatherData.getWeatherData();
     Utils.initCitylist();
+    prefs = await SharedPreferences.getInstance();
+    final String drawerString = await prefs.getString('drawer') ?? "";
+    print(drawerString);
+    addDrawerFromString(drawerString);
     _isLoading = false;
   }
 
@@ -44,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .getWeatherData(isRefresh: true);
   }
 
-  void addDrawerElement(City location){
+  void addDrawerElement(City location) async{
     drawerElements.addAll({
       location: 
       ListTile(
@@ -61,14 +69,44 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Text("${location.name}, ${location.country}"), 
             ),
             IconButton(
-              onPressed: () {setState((){drawerElements.remove(location);});}, 
+              onPressed: () async {setState(() {
+                  drawerElements.remove(location);
+                });
+                // remove current data
+                await prefs.remove('drawer');
+                // save new data
+                await prefs.setString('drawer', encodeDrawer(drawerElements));
+                print(await prefs.getString('drawer'));
+              }, 
               icon: const Icon(Icons.remove, color: Colors.black),
             ),
           ],
         )
       ),
     });
+
+    // remove current data
+    await prefs.remove('drawer');
+    // save new data
+    await prefs.setString('drawer', encodeDrawer(drawerElements));
+
+    print(await prefs.getString('drawer'));
+    print(drawerElements.toString());
   }
+
+  String encodeDrawer(Map<City, Widget> toEncode) => json.encode(
+    toEncode.keys.map<Map<String, dynamic>>((city) => city.toMap()).toList(),
+  );
+
+  void addDrawerFromString(String string){
+    if (string == "") return;
+
+    List<City> cities = (json.decode(string) as List<dynamic>).map<City>((item) => City.fromJson(item)).toList();
+
+    for (City city in cities){
+      addDrawerElement(city);
+    }
+  } 
 
   @override
   Widget build(BuildContext context) {

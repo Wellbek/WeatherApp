@@ -135,9 +135,6 @@ class WeatherData with ChangeNotifier {
         'https://api.openweathermap.org/data/2.5/weather?q=$location&units=metric&appid=$apiKey',
       ); 
 
-    print(lat);
-    print(lon);
-
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
