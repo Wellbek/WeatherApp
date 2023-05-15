@@ -42,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
     Utils.initCitylist();
     prefs = await SharedPreferences.getInstance();
     final String drawerString = await prefs.getString('drawer') ?? "";
-    print(drawerString);
     addDrawerFromString(drawerString);
     _isLoading = false;
   }
@@ -53,8 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void addDrawerElement(City location) async{
-    drawerElements.addAll({
-      location: 
+    // Check for duplicates
+    for (City city in drawerElements.keys){
+      if (city.name == location.name && city.lat == location.lat && city.long == location.long) return;
+    }
+
+    drawerElements[location] =
       ListTile(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -76,22 +79,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 await prefs.remove('drawer');
                 // save new data
                 await prefs.setString('drawer', encodeDrawer(drawerElements));
-                print(await prefs.getString('drawer'));
               }, 
               icon: const Icon(Icons.remove, color: Colors.black),
             ),
           ],
         )
-      ),
-    });
+      );
 
     // remove current data
     await prefs.remove('drawer');
     // save new data
     await prefs.setString('drawer', encodeDrawer(drawerElements));
-
-    print(await prefs.getString('drawer'));
-    print(drawerElements.toString());
   }
 
   String encodeDrawer(Map<City, Widget> toEncode) => json.encode(
