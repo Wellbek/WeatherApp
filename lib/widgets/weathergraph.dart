@@ -129,12 +129,45 @@ class WeatherGraph extends StatelessWidget {
       FlSpot(24, weatherData.hourlyWeather[7].temp), 
     ],
     isCurved: true,
-    color: const Color.fromARGB(255, 47, 196, 52),
+    color: Colors.white,
     barWidth: 4,
-    dotData: FlDotData(show: true,),
+    dotData: FlDotData( 
+      getDotPainter: (spot, percent, barData, index) {
+        if (spot == barData.mostTopSpot){ // mark highest temp
+          return FlDotCirclePainter( 
+            radius: 5,
+            color: Colors.red[400],
+            strokeWidth: 2,
+            strokeColor: Colors.white
+          );
+        }
+        else if (spot == barData.mostBottomSpot){ // mark lowest temp
+          return FlDotCirclePainter( 
+            radius: 5,
+            color: Colors.green[400],
+            strokeWidth: 2,
+            strokeColor: Colors.white
+          );
+        }
+        else if (["Rain", "Thunderstorm", "Drizzle", "Snow"].contains( (index == 0) ? weatherData.currentWeather.currently : weatherData.hourlyWeather[index].currently)){ // mark rain, thunder, drizzle and snow with blue circles
+          return FlDotCirclePainter( 
+            radius: 5,
+            color: Colors.blue[400],
+            strokeWidth: 2,
+            strokeColor: Colors.white
+          );
+        } else{
+          return FlDotCirclePainter(
+            radius: 4,
+            color: Colors.grey[400],
+            strokeWidth: 0,
+          );
+        }
+      },
+    ),
     belowBarData: BarAreaData(
       show: true,
-      color: const Color.fromARGB(29, 73, 255, 109),
+      color: Color.fromARGB(29, 255, 255, 255),
     )
   );
 

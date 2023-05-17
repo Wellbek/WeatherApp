@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import '../widgets/searchbar.dart';
 import '../materials/gradientmaterial.dart';
 import '../provider/weatherdata.dart';
-import 'city.dart';
+import 'models/city.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {

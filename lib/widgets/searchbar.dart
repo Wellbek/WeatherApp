@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:weatherapp/provider/weatherdata.dart';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 
-import '../city.dart';
+import '../models/city.dart';
 import '../utils.dart';
 
 class SearchBar extends StatefulWidget {
