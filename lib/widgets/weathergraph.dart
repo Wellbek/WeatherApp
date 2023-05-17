@@ -25,7 +25,7 @@ class WeatherGraph extends StatelessWidget {
             ),
             children: [ ((){
               // show current weather if raining, thunderstorm, drizzling or snowing
-              String curr = (lineBarSpot.x == 0) ? weatherData.currentWeather.currently : weatherData.hourlyWeather[lineBarSpot.x.toInt()].currently;
+              String curr = (lineBarSpot.spotIndex== 0) ? weatherData.currentWeather.currently : weatherData.hourlyWeather[lineBarSpot.spotIndex].currently;
               if (["Rain", "Thunderstorm", "Drizzle", "Snow"].contains(curr)){ 
                 return TextSpan(
                   text: "\n$curr",
