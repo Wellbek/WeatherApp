@@ -18,10 +18,27 @@ class WeatherGraph extends StatelessWidget {
         return lineBarsSpot.map((lineBarSpot) {
           return LineTooltipItem(
             "${lineBarSpot.y.toInt()}°C",
-            const TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
+            TextStyle(
+              color: Colors.grey[700],
+              fontWeight: FontWeight.w600,
+              fontSize: 18,
             ),
+            children: [ ((){
+              // show current weather if raining, thunderstorm, drizzling or snowing
+              String curr = (lineBarSpot.x == 0) ? weatherData.currentWeather.currently : weatherData.hourlyWeather[lineBarSpot.x.toInt()].currently;
+              if (["Rain", "Thunderstorm", "Drizzle", "Snow"].contains(curr)){ 
+                return TextSpan(
+                  text: "\n$curr",
+                  style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    color: Colors.blue[700],
+                  )
+                );
+              } else return const TextSpan();
+            }()),
+            ]
           );
         }).toList();
       },
