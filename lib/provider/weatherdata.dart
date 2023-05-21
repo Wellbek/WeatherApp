@@ -22,26 +22,36 @@ class WeatherData with ChangeNotifier {
   bool isLoading = false;
   bool isRequestError = false;
   bool isLocationError = false;
+  bool liveLocation = true;
 
-  Future<void> getWeatherData({bool isRefresh = false}) async {
+  Future<void> getWeatherData({bool isRefresh = false, bool liveLoc = false}) async {
     isLoading = true;
     isRequestError = false;
     isLocationError = false;
+    if (liveLoc) liveLocation = true;
     if (isRefresh) notifyListeners();
-    await Location().requestService().then(
-      (value) async {
-        if (value) {
-          final locData = await Location().getLocation();
-          currentLocation = LatLng(locData.latitude!, locData.longitude!);
-          await getCurrentWeather(currentLocation!);
-          await getHourlyWeather(currentLocation!);
-        } else {
-          isLoading = false;
-          isLocationError = true;
-          notifyListeners();
-        }
-      },
-    );
+    if (!liveLocation){
+      await getCurrentWeather(currentLocation!);
+      await getHourlyWeather(currentLocation!);
+    }
+    else{
+      print("Fetching live location...");
+      await Location().requestService().then(
+        (value) async {
+          if (value) {
+            final locData = await Location().getLocation();
+            currentLocation = LatLng(locData.latitude!, locData.longitude!);
+            await getCurrentWeather(currentLocation!);
+            await getHourlyWeather(currentLocation!);
+          } else {
+            isLoading = false;
+            isLocationError = true;
+            notifyListeners();
+          }
+        },
+      );
+      print("Done!");
+    }
   }
 
   Future<void> getCurrentWeather(LatLng location) async {
@@ -127,6 +137,7 @@ class WeatherData with ChangeNotifier {
   }
 
   Future<void> searchWeatherWithLocation(String location, [double? lat, double? lon]) async {
+    liveLocation = false;
     Uri url = (lat != null && lon != null) 
       ? Uri.parse(
         'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&units=metric&appid=$apiKey',
@@ -139,6 +150,7 @@ class WeatherData with ChangeNotifier {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
       weather = Weather.fromJson(extractedData);
+      if (currentLocation != LatLng(weather.lat, weather.long)) currentLocation = LatLng(weather.lat, weather.long);
     } catch (error) {
       isRequestError = true;
       rethrow;

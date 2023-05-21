@@ -202,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],   
                       ),
                       onTap: () {
-                        Provider.of<WeatherData>(context, listen: false).getWeatherData(isRefresh: true);
+                        Provider.of<WeatherData>(context, listen: false).getWeatherData(isRefresh: true, liveLoc: true);
                       },
                     )
                   ]
