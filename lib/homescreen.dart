@@ -51,11 +51,32 @@ class _HomeScreenState extends State<HomeScreen> {
         .getWeatherData(isRefresh: true);
   }
 
+  bool isInDrawer(City location){
+    // if traveling you may be able to add your current loc infinite often to drawer since lat, long are changing slightly
+    // introduction of tolerance variable 'tolerance' to atleast decrease the likelyhood of this bug discovery
+    int tolerance = 2;
+    bool latTolerant, longTolerant = true;
+    
+    for (City city in drawerElements.keys){
+      latTolerant = (city.lat <= location.lat + tolerance && city.lat >= location.lat - tolerance);
+      longTolerant = (city.long <= location.long + tolerance && city.long >= location.long - tolerance);
+      if (city.name == location.name &&  latTolerant && longTolerant) return true;
+    }
+    return false;
+  }
+
+  City getDrawerElement(String name, double lat, double long, double tolerance){
+    for (City city in drawerElements.keys){
+      bool latTolerant = (city.lat <= lat + tolerance && city.lat >= lat - tolerance);
+      bool longTolerant = (city.long <= long + tolerance && city.long >= long - tolerance);
+      if (city.name == name && latTolerant && longTolerant) return city;
+    }
+    return City(id: 0, name: 'null', state: 'null', country: 'null', long: 0, lat: 0);
+  }
+
   void addDrawerElement(City location) async{
     // Check for duplicates
-    for (City city in drawerElements.keys){
-      if (city.name == location.name && city.lat == location.lat && city.long == location.long) return;
-    }
+    if (isInDrawer(location)) return;
 
     drawerElements[location] =
       ListTile(
@@ -171,8 +192,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 actions: [
                   IconButton(
-                    onPressed: () {setState(() {addDrawerElement(City(id: 0, name: weatherProv.weather.cityName, state: "", country: weatherProv.weather.country, long: weatherProv.weather.long, lat: weatherProv.weather.lat)); });}, 
-                    icon: const Icon(Icons.add_location_alt_outlined, color: Colors.white),
+                    onPressed: () {setState(() {
+                      // if already in drawer then remove, else add
+                      City location = City(id: 0, name: weatherProv.weather.cityName, state: "", country: weatherProv.weather.country, long: weatherProv.weather.long, lat: weatherProv.weather.lat);
+                      if (isInDrawer(location)){
+                        drawerElements.remove(getDrawerElement(weatherProv.weather.cityName, weatherProv.weather.lat, weatherProv.weather.long, 2));
+                        // remove current data
+                        prefs.remove('drawer');
+                        // save new data
+                        prefs.setString('drawer', encodeDrawer(drawerElements));
+                      } else {
+                        addDrawerElement(location); 
+                      }                  
+                    });}, 
+                    icon: (() {
+                      if (isInDrawer(City(id: 0, name: weatherProv.weather.cityName, state: "", country: weatherProv.weather.country, long: weatherProv.weather.long, lat: weatherProv.weather.lat))) {
+                        return const Icon(Icons.check, color: Colors.white);
+                      } else {
+                        return const Icon(Icons.add_location_alt_outlined, color: Colors.white);
+                      }} ()),
                   )
                 ],
                 backgroundColor: const Color.fromARGB(0, 0, 0, 0),
