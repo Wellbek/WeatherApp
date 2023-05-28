@@ -74,6 +74,14 @@ class _SearchBarState extends State<SearchBar> {
                     .searchWeather(location: city.name, lat: city.lat, lon: city.long);
           });
         },
+        textSubmitted: (input) { 
+          setState(() {
+            _textController.text.isEmpty
+                ? _validate = true
+                : Provider.of<WeatherData>(context, listen: false)
+                    .searchWeather(location: input);
+          });
+        },
       ),
     );
   }
