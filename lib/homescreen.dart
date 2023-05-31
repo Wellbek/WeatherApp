@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:weatherapp/provider/darktheme.dart';
 import 'package:weatherapp/utils.dart';
 import 'package:weatherapp/widgets/weathergraph.dart';
 import 'package:weatherapp/widgets/threedayforecast.dart';
@@ -27,12 +28,18 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState(){
     super.initState();
+    _getCurrentAppTheme();
     _getData();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  /* fetch theme value from shared preferences and assign value to provider */
+  void _getCurrentAppTheme() async {
+    Provider.of<DarkThemeProvider>(context, listen: false).darkTheme = await Provider.of<DarkThemeProvider>(context, listen: false).darkThemePreference.getDarkTheme();
   }
 
   Future<void> _getData() async {
@@ -129,6 +136,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var darkThemeProvider = Provider.of<DarkThemeProvider>(context, listen: false);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -191,7 +200,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
                 actions: [
-                  IconButton(
+                  IconButton( // switch theme button
+                    onPressed: () {setState(() { darkThemeProvider.darkTheme = !darkThemeProvider.darkTheme; });},
+                    icon: (() {
+                      return darkThemeProvider.darkTheme ? const Icon(Icons.light_outlined, color: Colors.white,) : const Icon(Icons.light_rounded, color: Colors.white,);
+                    } ()),
+                  ),
+                  IconButton( // add to drawer button
                     onPressed: () {setState(() {
                       // if already in drawer then remove, else add
                       City location = City(id: 0, name: weatherProv.weather.cityName, state: "", country: weatherProv.weather.country, long: weatherProv.weather.long, lat: weatherProv.weather.lat);
