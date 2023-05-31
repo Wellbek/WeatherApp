@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:weatherapp/provider/darktheme.dart';
+import 'package:weatherapp/styles.dart';
 import 'package:weatherapp/utils.dart';
 import 'package:weatherapp/widgets/weathergraph.dart';
 import 'package:weatherapp/widgets/threedayforecast.dart';
@@ -138,257 +139,260 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     var darkThemeProvider = Provider.of<DarkThemeProvider>(context, listen: false);
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Consumer<WeatherData>(
-          builder: (context, weatherProv, _) {
-            if (weatherProv.isLocationError){
-              log("Location Error");
-            }
-            if (weatherProv.isRequestError){
-              log("Request Error");
-            }
-            return (_isLoading || weatherProv.isLoading)
-            ? const Expanded(
-              child: Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Color(0xff587ad8),
-                  color: Colors.white,
+    return MaterialApp(
+      theme: Styles.themeData(Provider.of<DarkThemeProvider>(context).darkTheme, context),
+      home: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: SafeArea(
+          child: Consumer<WeatherData>(
+            builder: (context, weatherProv, _) {
+              if (weatherProv.isLocationError){
+                log("Location Error");
+              }
+              if (weatherProv.isRequestError){
+                log("Request Error");
+              }
+              return (_isLoading || weatherProv.isLoading)
+              ? Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: const Color(0xff587ad8),
+                    color: darkThemeProvider.darkTheme ? Colors.grey : Colors.white,
+                  ),
                 ),
-              ),
-            ) :
-            Scaffold(   
-              extendBodyBehindAppBar: true,
-              resizeToAvoidBottomInset: false,
-              appBar: AppBar(
-                centerTitle: true,
-                title: Column(
-                  children: [
-                    Text( 
-                      weatherProv.weather.cityName, 
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 22,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            blurRadius:10.0,  // shadow blur
-                            color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                            offset: Offset(2.0,2.0), // how much shadow will be shown
-                          ),
-                        ],
+              ) :
+              Scaffold(   
+                extendBodyBehindAppBar: true,
+                resizeToAvoidBottomInset: false,
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: Column(
+                    children: [
+                      Text( 
+                        weatherProv.weather.cityName, 
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 22,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              blurRadius:10.0,  // shadow blur
+                              color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                              offset: Offset(2.0,2.0), // how much shadow will be shown
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
+                      Text(
+                        weatherProv.weather.country,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 14,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              blurRadius:10.0,  // shadow blur
+                              color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                              offset: Offset(2.0,2.0), // how much shadow will be shown
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.center,
+                      )
+                    ],
+                  ),
+                  actions: [
+                    IconButton( // switch theme button
+                      onPressed: () {setState(() { darkThemeProvider.darkTheme = !darkThemeProvider.darkTheme; });},
+                      icon: (() {
+                        return darkThemeProvider.darkTheme ? const Icon(Icons.light_outlined, color: Colors.white,) : const Icon(Icons.light_rounded, color: Colors.white,);
+                      } ()),
                     ),
-                    Text(
-                      weatherProv.weather.country,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 14,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            blurRadius:10.0,  // shadow blur
-                            color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                            offset: Offset(2.0,2.0), // how much shadow will be shown
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
+                    IconButton( // add to drawer button
+                      onPressed: () {setState(() {
+                        // if already in drawer then remove, else add
+                        City location = City(id: 0, name: weatherProv.weather.cityName, state: "", country: weatherProv.weather.country, long: weatherProv.weather.long, lat: weatherProv.weather.lat);
+                        if (isInDrawer(location)){
+                          drawerElements.remove(getDrawerElement(weatherProv.weather.cityName, weatherProv.weather.lat, weatherProv.weather.long, 2));
+                          // remove current data
+                          prefs.remove('drawer');
+                          // save new data
+                          prefs.setString('drawer', encodeDrawer(drawerElements));
+                        } else {
+                          addDrawerElement(location); 
+                        }                  
+                      });}, 
+                      icon: (() {
+                        if (isInDrawer(City(id: 0, name: weatherProv.weather.cityName, state: "", country: weatherProv.weather.country, long: weatherProv.weather.long, lat: weatherProv.weather.lat))) {
+                          return const Icon(Icons.check, color: Colors.white);
+                        } else {
+                          return const Icon(Icons.add_location_alt_outlined, color: Colors.white);
+                        }} ()),
                     )
                   ],
+                  backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+                  elevation: 0,
                 ),
-                actions: [
-                  IconButton( // switch theme button
-                    onPressed: () {setState(() { darkThemeProvider.darkTheme = !darkThemeProvider.darkTheme; });},
-                    icon: (() {
-                      return darkThemeProvider.darkTheme ? const Icon(Icons.light_outlined, color: Colors.white,) : const Icon(Icons.light_rounded, color: Colors.white,);
-                    } ()),
-                  ),
-                  IconButton( // add to drawer button
-                    onPressed: () {setState(() {
-                      // if already in drawer then remove, else add
-                      City location = City(id: 0, name: weatherProv.weather.cityName, state: "", country: weatherProv.weather.country, long: weatherProv.weather.long, lat: weatherProv.weather.lat);
-                      if (isInDrawer(location)){
-                        drawerElements.remove(getDrawerElement(weatherProv.weather.cityName, weatherProv.weather.lat, weatherProv.weather.long, 2));
-                        // remove current data
-                        prefs.remove('drawer');
-                        // save new data
-                        prefs.setString('drawer', encodeDrawer(drawerElements));
-                      } else {
-                        addDrawerElement(location); 
-                      }                  
-                    });}, 
-                    icon: (() {
-                      if (isInDrawer(City(id: 0, name: weatherProv.weather.cityName, state: "", country: weatherProv.weather.country, long: weatherProv.weather.long, lat: weatherProv.weather.lat))) {
-                        return const Icon(Icons.check, color: Colors.white);
-                      } else {
-                        return const Icon(Icons.add_location_alt_outlined, color: Colors.white);
-                      }} ()),
-                  )
-                ],
-                backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-                elevation: 0,
-              ),
-              drawer: Drawer(
-                child: ListView(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 80,
-                      child: DrawerHeader(
-                        child: SearchBar(), 
-                      ),
-                    )
-                  ]
-                  + [ListTile(
-                      title: Row(
-                        children: const [
-                          Icon(Icons.share_location_outlined, color: Color.fromARGB(255, 216, 99, 88),),
-                          SizedBox(width: 10,),
-                          Text(
-                            'LIVE LOCATION', 
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 216, 99, 88),
-                            )
-                          ),
-                        ],   
-                      ),
-                      onTap: () {
-                        Provider.of<WeatherData>(context, listen: false).getWeatherData(isRefresh: true, liveLoc: true);
-                      },
-                    )
-                  ]
-                  + drawerElements.values.toList(),           
-                ),
-              ),
-              body: Stack(
-                children: <Widget> [
-                  const GradientMaterial(),
-                  RefreshIndicator(
-                    onRefresh: () => _refreshData(context),
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      child: Container(
-                        margin: const EdgeInsets.symmetric( vertical: 55,),
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Icon(
-                                Utils.getWeatherIcon(weatherProv.weather.currently),
-                                color: Colors.white,
-                                size: 150,
-                                shadows: const [
-                                    Shadow(
-                                      blurRadius:10.0,  // shadow blur
-                                      color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                      offset: Offset(2.0,2.0), // how much shadow will be shown
-                                    ),
-                                  ],
-                              ),
-                              Text(weatherProv.weather.description,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  shadows: [
-                                      Shadow(
-                                        blurRadius:10.0,  // shadow blur
-                                        color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                        offset: Offset(2.0,2.0), // how much shadow will be shown
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 10,),
-                              Text('${weatherProv.weather.temp.toStringAsFixed(0)}°C', 
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 90,
-                                  color: Colors.white,
-                                  shadows: [
-                                      Shadow(
-                                        blurRadius:10.0,  // shadow blur
-                                        color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                        offset: Offset(2.0,2.0), // how much shadow will be shown
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              Text('${weatherProv.weather.tempMax.toStringAsFixed(0)}° / ${weatherProv.weather.tempMin.toStringAsFixed(0)}°', 
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  shadows: [
-                                      Shadow(
-                                        blurRadius:10.0,  // shadow blur
-                                        color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                        offset: Offset(2.0,2.0), // how much shadow will be shown
-                                      ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 10,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.water_drop_outlined, color: Colors.white,),
-                                  Text(' ${weatherProv.weather.humidity} %', 
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      shadows: [
-                                          Shadow(
-                                            blurRadius:10.0,  // shadow blur
-                                            color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                            offset: Offset(2.0,2.0), // how much shadow will be shown
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20,),
-                                  const Icon(Icons.air_outlined, color: Colors.white,),
-                                  Text(' ${weatherProv.weather.windSpeed} m/s', 
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      shadows: [
-                                          Shadow(
-                                            blurRadius:10.0,  // shadow blur
-                                            color: Color.fromARGB(60, 0, 0, 0), // shadow color
-                                            offset: Offset(2.0,2.0), // how much shadow will be shown
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                drawer: Drawer(
+                  child: ListView(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 80,
+                        child: DrawerHeader(
+                          child: SearchBar(), 
+                        ),
+                      )
+                    ]
+                    + [ListTile(
+                        title: Row(
+                          children: const [
+                            Icon(Icons.share_location_outlined, color: Color.fromARGB(255, 216, 99, 88),),
+                            SizedBox(width: 10,),
+                            Text(
+                              'LIVE LOCATION', 
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 216, 99, 88),
                               )
-                            ],
+                            ),
+                          ],   
+                        ),
+                        onTap: () {
+                          Provider.of<WeatherData>(context, listen: false).getWeatherData(isRefresh: true, liveLoc: true);
+                        },
+                      )
+                    ]
+                    + drawerElements.values.toList(),           
+                  ),
+                ),
+                body: Stack(
+                  children: <Widget> [
+                    const GradientMaterial(),
+                    RefreshIndicator(
+                      onRefresh: () => _refreshData(context),
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Container(
+                          margin: const EdgeInsets.symmetric( vertical: 55,),
+                          child: Center(
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Utils.getWeatherIcon(weatherProv.weather.currently),
+                                  color: Colors.white,
+                                  size: 150,
+                                  shadows: const [
+                                      Shadow(
+                                        blurRadius:10.0,  // shadow blur
+                                        color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                        offset: Offset(2.0,2.0), // how much shadow will be shown
+                                      ),
+                                    ],
+                                ),
+                                Text(weatherProv.weather.description,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    shadows: [
+                                        Shadow(
+                                          blurRadius:10.0,  // shadow blur
+                                          color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                          offset: Offset(2.0,2.0), // how much shadow will be shown
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10,),
+                                Text('${weatherProv.weather.temp.toStringAsFixed(0)}°C', 
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 90,
+                                    color: Colors.white,
+                                    shadows: [
+                                        Shadow(
+                                          blurRadius:10.0,  // shadow blur
+                                          color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                          offset: Offset(2.0,2.0), // how much shadow will be shown
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                Text('${weatherProv.weather.tempMax.toStringAsFixed(0)}° / ${weatherProv.weather.tempMin.toStringAsFixed(0)}°', 
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                    shadows: [
+                                        Shadow(
+                                          blurRadius:10.0,  // shadow blur
+                                          color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                          offset: Offset(2.0,2.0), // how much shadow will be shown
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.water_drop_outlined, color: Colors.white,),
+                                    Text(' ${weatherProv.weather.humidity} %', 
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        shadows: [
+                                            Shadow(
+                                              blurRadius:10.0,  // shadow blur
+                                              color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                              offset: Offset(2.0,2.0), // how much shadow will be shown
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 20,),
+                                    const Icon(Icons.air_outlined, color: Colors.white,),
+                                    Text(' ${weatherProv.weather.windSpeed} m/s', 
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                        shadows: [
+                                            Shadow(
+                                              blurRadius:10.0,  // shadow blur
+                                              color: Color.fromARGB(60, 0, 0, 0), // shadow color
+                                              offset: Offset(2.0,2.0), // how much shadow will be shown
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    alignment: Alignment.bottomCenter,
-                    margin: const EdgeInsets.fromLTRB(15, 450, 15, 0),
-                    height: 225,
-                    child: 
-                      WeatherGraph()
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    height: 110,
-                    margin: const EdgeInsets.fromLTRB(7.5, 690, 7.5, 0),
-                    child: ThreeDayForecast(),
-                  ),
-                ],
-              )
-            );
-          }
+                    Container(
+                      alignment: Alignment.bottomCenter,
+                      margin: const EdgeInsets.fromLTRB(15, 450, 15, 0),
+                      height: 225,
+                      child: 
+                        WeatherGraph()
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      height: 110,
+                      margin: const EdgeInsets.fromLTRB(7.5, 690, 7.5, 0),
+                      child: ThreeDayForecast(),
+                    ),
+                  ],
+                )
+              );
+            }
+          ),
         ),
       ),
     );
