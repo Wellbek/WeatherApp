@@ -2,6 +2,8 @@
 
 A simple multiplatfrom weather application created using [Flutter](https://flutter.dev/) and [Dart](https://dart.dev/) and using API from [OpenWeatherMap](https://openweathermap.org/).
 
+https://github.com/Wellbek/WeatherApp/assets/54329793/861f7c1b-a9e1-40a3-84d7-50c5cd463bdb
+
 ## Description
 
 ### Purpose 
@@ -35,3 +37,4 @@ flutter pub get
 String apiKey = 'examplekey123';
 ```
 6. Run the App.
+
